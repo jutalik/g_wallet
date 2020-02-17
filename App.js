@@ -1,114 +1,140 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import {Image, Dimensions} from 'react-native';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
+import {createStackNavigator} from 'react-navigation-stack';
+import {IMAGE} from './src/constants/Image'
+import {createDrawerNavigator} from 'react-navigation-drawer';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {SideMenu, Home, HomeDetail, Wallet,WalletDetail, Setting,SettingDetail,Profile,Login,Register,Account} from './src/component'
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+const navOptionHandler = (navigation) => ({
+  header: null
+})
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+const HomeStack = createStackNavigator({
+  Home: {
+    screen: Home,
+    navigationOptions: navOptionHandler
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  HomeDetail: {
+    screen: HomeDetail,
+    navigationOptions: navOptionHandler
+  }
+})
+
+
+const WalletStack = createStackNavigator({
+  Wallet: {
+    screen: Wallet,
+    navigationOptions: navOptionHandler
   },
-  body: {
-    backgroundColor: Colors.white,
+  WalletDetail: {
+    screen: WalletDetail,
+    navigationOptions: navOptionHandler
+  }
+})
+
+
+const SettingStack = createStackNavigator({
+  Setting: {
+    screen: Setting,
+    navigationOptions: navOptionHandler
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  SettingDetail:{
+    screen: SettingDetail,
+    navigationOptions: navOptionHandler
+  }
+})
+
+
+const MainTabs = createBottomTabNavigator({
+  Home: {
+    screen:HomeStack,
+    navigationOptions: {
+      tabBarLabel: 'Home',
+      tabBarIcon: ({tintColor}) => (
+        <Image 
+          source={IMAGE.ICON_HOME}
+          resizeMode="contain"
+          style={{width:20, height: 20}}
+        />
+      )
+    }
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
+  Wallet: {
+    screen:WalletStack,
+    navigationOptions: {
+      tabBarLabel: 'Wallet',
+      tabBarIcon: ({tintColor}) => (
+        <Image 
+          source={IMAGE.ICON_BITCOIN}
+          resizeMode="contain"
+          style={{width:20, height: 20}}
+        />
+      )
+    }
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  Setting: {
+    screen:SettingStack,
+    navigationOptions: {
+      tabBarLabel: 'Setting',
+      tabBarIcon: ({tintColor}) => (
+        <Image 
+          source={IMAGE.ICON_SETTINGS}
+          resizeMode="contain"
+          style={{width:20, height: 20}}
+        />
+      )
+    }
   },
 });
 
-export default App;
+const MainStack = createStackNavigator ({
+  Home: {
+    screen: MainTabs,
+    navigationOptions: navOptionHandler
+  },
+  Account: {
+    screen: Account,
+    navigationOptions: navOptionHandler
+  },
+  Profile: {
+    screen: Profile,
+    navigationOptions: navOptionHandler
+  }
+}, { initialRouteName: 'Home'})
+
+const appDrawer = createDrawerNavigator (
+  {
+    drawer: MainStack
+  },
+  {
+    contentComponent: SideMenu,
+    drawerWidth: Dimensions.get('window').width * 3/4
+  }
+)
+
+
+const authStack = createStackNavigator ({
+  Login: {
+    screen: Login,
+    navigationOptions: navOptionHandler
+  },
+  Register: {
+    screen: Register,
+    navigationOptions: navOptionHandler
+  }
+})
+
+
+const MainApp = createSwitchNavigator (
+  {
+    app: appDrawer,
+    auth: authStack
+  },
+  {
+    initialRouteName: 'auth'
+  }
+)
+export default createAppContainer(MainApp);
