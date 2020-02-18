@@ -37,6 +37,7 @@ target 'g_wallet' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+
   target 'g_walletTests' do
     inherit! :search_paths
     # Pods for testing

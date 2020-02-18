@@ -6,7 +6,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import {IMAGE} from './src/constants/Image'
 import {createDrawerNavigator} from 'react-navigation-drawer';
 
-import {SideMenu, Home, HomeDetail, Wallet,WalletDetail, Setting,SettingDetail,Profile,Login,Register,Account} from './src/component'
+import {SideMenu, Home, HomeDetail, Wallet,WalletDetail, Setting,SettingDetail,Profile,Login,Register,Account,CreateWallet} from './src/component'
 
 const navOptionHandler = (navigation) => ({
   header: null
@@ -31,6 +31,10 @@ const WalletStack = createStackNavigator({
   },
   WalletDetail: {
     screen: WalletDetail,
+    navigationOptions: navOptionHandler
+  },
+  CreateWallet:{
+    screen: CreateWallet,
     navigationOptions: navOptionHandler
   }
 })
@@ -102,7 +106,7 @@ const MainStack = createStackNavigator ({
   Profile: {
     screen: Profile,
     navigationOptions: navOptionHandler
-  }
+  },
 }, { initialRouteName: 'Home'})
 
 const appDrawer = createDrawerNavigator (
